@@ -14,7 +14,7 @@
 .if t .sp .5
 ..
 .ta .3i .6i .9i 1.2i 1.5i 1.8i
-.TH xwpe alpha "May 3, 1999"
+.TH xwpe git "June 31, 2017"
 .UC
 .SH NAME
 xwpe, xwe, wpe, we \- X-Window Programming Environment
@@ -26,9 +26,8 @@ xwpe, xwe, wpe, we \- X-Window Programming Environment
   \fBwe\fP [ \fIoptions\fP ] file ...
 .EE
 .SH DESCRIPTION
-Xwpe can be used with or without the programming interface.
-It has its own X interface but can be used also on a
-character terminal.
+Xwpe is an editor that you can use with or without a programming interface.
+It has its own X interface but you could also use it on a character terminal.
 \fIxwpe\fP fires up the X interface together with the programming
 interface. \fIxwe\fP is the X version but without the special
 features of the programming interface. In connection with a
@@ -42,24 +41,25 @@ environments from Borland and xwpe is that many compilers, linkers,
 and debuggers can be used in xwpe.  Menus and commands are
 accessible via both the keyboard and mouse.
 
+You can examine 
 Errors that occur while compiling and linking a program
-can be examined in the sources. The cursor will jump to the
-corresponding line in the source-file. Programs using
-more than one source-file can be managed with the so called
+in the sources. The cursor will jump to the
+corresponding line in the source-file. You can manage programs using
+more than one source-file with the so called
 "project-option" (see also \fIproject-file\fP).
-The program can be started from within the 
-\fIProgramming-Environment\fP and errors may be found using a
+You can start the program from within the 
+\fIProgramming-Environment\fP and find errors using a
 debugger. The \fIdebugging-environment\fP allows the user to set
-and unset breakpoints directly in the source code. The
-contents of variables may be displayed in a special window,
+and unset breakpoints directly in the source code. You can display the
+contents of variables in a special window,
 the \fIWatch-Window\fP. This window is updated while reaching a
 breakpoint. The \fIStack-Window\fP displays the program stack.
 
 Help is available for xwpe and the man-pages installed on
-the system may be displayed. All this can be reached via the
+the system may be displayed. You can reach all this via the
 \fIhelp-functions\fP.
 
-The \fIeditor\fP may be used to edit up to 35 files at the same time.
+You can edit up to 35 files at the same time.
 They are all displayed in a window of their own. A \fImouse\fP is
 used to select special editor functions from the top menu.
 These functions can also be selected by hitting a \fIspecial key\fP

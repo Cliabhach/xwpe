@@ -16,7 +16,17 @@
 
 /*  Effects of #Defines (do not change)  */
 
-#define CHECKHEADER
+/**
+ * e_check_header(char *file, M_TIME otime, ECTN *cn, int sw)
+ *  
+ * is a function in we_prog.c that reads the files in edit 
+ * and checks the file itself plus the included files.
+ *
+ * It seems to compare times of files. Not clear what the role of
+ * the different files is (denoted by obuf and cbuf).
+ *
+ */
+#define CHECKHEADER	// define to activate e_check_header functionality
 
 #ifdef DJGPP
 #define NODEBUGGER
