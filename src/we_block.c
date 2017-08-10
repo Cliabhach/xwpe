@@ -6,6 +6,7 @@
 
 #include "config.h"
 #include <string.h>
+#include "we_undo_shield.h"
 #include "keys.h"
 #include "messages.h"
 #include "model.h"
@@ -14,8 +15,6 @@
 #include "we_progn.h"
 #include "we_edit.h"
 #include <ctype.h>
-
-extern int e_undo_sw;
 
 /*	delete block */
 /**
@@ -273,7 +272,7 @@ e_edt_einf (we_window_t * f)
     b = f->b;
     if (f->ins == 8)
         return (0);
-    e_undo_sw = 1;
+    shield_undo();
 
     /**********************/
     y = b->b.y;
@@ -288,7 +287,7 @@ e_edt_einf (we_window_t * f)
     e_brk_recalc (f, y, len);		// recalculate breakpoints
     /**********************/
 
-    e_undo_sw = 0;
+    unshield_undo();
     e_add_undo ('c', b, b->b.x, b->b.y, 0);
     sc_txt_2 (f);
     f->save = b->cn->maxchg + 1;
@@ -320,9 +319,9 @@ e_blck_move (we_window_t * f)
             ka.x = f->ed->f[f->ed->mxedt]->s->mark_end.x +
                    f->ed->f[f->ed->mxedt]->s->mark_begin.x - b->b.x;
     }
-    e_undo_sw = 1;
+    shield_undo();
     e_move_block (b->b.x, b->b.y, b, b, f);
-    e_undo_sw = 0;
+    unshield_undo();
     e_add_undo ('v', b, ka.x, ka.y, 0);
     f->save = b->cn->maxchg + 1;
     return (0);
@@ -525,9 +524,9 @@ e_blck_copy (we_window_t * f)
     if (f->ins == 8)
         return (0);
     f->save = 1;
-    e_undo_sw = 1;
+    shield_undo();
     e_copy_block (b->b.x, b->b.y, b, b, f);
-    e_undo_sw = 0;
+    unshield_undo();
     e_add_undo ('c', b, b->b.x, b->b.y, 0);
     sc_txt_2 (f);
     f->save = b->cn->maxchg + 1;
@@ -1319,11 +1318,11 @@ e_replace (we_window_t *window)
             {
                 rep++;
                 e_add_undo ('s', buffer, screen->fa.x, buffer->b.y, find->sn);
-                e_undo_sw = 1;
+                shield_undo();
                 e_del_nchar (buffer, screen, screen->fa.x, buffer->b.y, find->sn);
                 e_ins_nchar (buffer, screen, (unsigned char *) find->replace, screen->fa.x,
                              buffer->b.y, find->rn);
-                e_undo_sw = 0;
+                unshield_undo();
                 screen->fe.x = screen->fa.x + find->rn;
                 buffer->b.x = !(find->sw & 4) ? screen->fe.x : screen->fa.x;
                 e_schirm (window, 1);

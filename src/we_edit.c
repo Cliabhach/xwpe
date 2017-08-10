@@ -7,6 +7,7 @@
 #include "config.h"
 #include <string.h>
 #include <ctype.h>
+#include "we_undo_shield.h"
 #include "keys.h"
 #include "messages.h"
 #include "options.h"
@@ -25,7 +26,7 @@
 #include <unistd.h>
 #endif
 
-int e_undo_sw = 0, e_redo_sw = 0;
+int e_redo_sw = 0;
 
 char *e_make_postf ();
 int e_del_a_ind ();
@@ -1819,7 +1820,7 @@ e_del_nchar (BUFFER * b, we_screen_t * s, int x, int y, int n)
 
     f->save += n;
     e_add_undo ('r', b, x, y, n);
-    e_undo_sw++;
+    shield_undo();
     len = b->bf[y].len;
     if (*(b->bf[y].s + len) == WPE_WR)
         len++;
@@ -1863,7 +1864,7 @@ e_del_nchar (BUFFER * b, we_screen_t * s, int x, int y, int n)
         b->bf[y].len = e_str_len (b->bf[y].s);
         b->bf[y].nrc = strlen ((const char *) b->bf[y].s);
     }
-    e_undo_sw--;
+    unshield_undo();
     sc_txt_4 (y, b, 0);
     return (x + n);
 }
@@ -1878,7 +1879,7 @@ e_ins_nchar (BUFFER * b, we_screen_t * sch, unsigned char *s, int xa, int ya,
 
     f->save += n;
     e_add_undo ('a', b, xa, ya, n);
-    e_undo_sw++;
+    shield_undo();
     if (b->bf[ya].len + n >= b->mx.x - 1)
     {
         if (xa < b->bf[ya].len)
@@ -2004,7 +2005,7 @@ e_ins_nchar (BUFFER * b, we_screen_t * sch, unsigned char *s, int xa, int ya,
     b->b.y = ya;
     b->bf[ya].len = e_str_len (b->bf[ya].s);
     b->bf[ya].nrc = strlen ((const char *) b->bf[ya].s);
-    e_undo_sw--;
+    unshield_undo();
     sc_txt_4 (ya, b, 0);
     return (xa + n);
 }
@@ -2337,16 +2338,25 @@ e_remove_undo (Undo * ud, int sw)
  *  y	Guess: ?? redo a previous undo TODO: verify meaning
  *  s	Uses s to replace a string of characters (verified with test)
  *
- *  Remark: the **global** e_undo_sw is a disabler for this function.
- *  if e_undo_sw is true, this function does nothing.
+ *  Remark: the functions to shield and unshield undo are shield_undo() and unshield_undo().
+ *			shield_undo() adds one shield, unshield_undo removes one shield.
+ *			This works so that nested calls on shield and unshield work as expected.
+ *
+ *          if undo is shielded, e_add_undo (this function) does nothing.
+ *
+ *          The function force_unshield_undo forcefully removes all shields, if present.
+ *          The function force_shield_undo forcefully replace all shields and applies one shield
+ *
+ *			Using force could upset nested shields. Prefer the non-force functions.
  */
 int
 e_add_undo (int sw, BUFFER * b, int x, int y, int n)
 {
+    if (undo_is_shielded())
+        return 0;
+
     Undo *next;
 
-    if (e_undo_sw)
-        return (0);
     if (!e_redo_sw && b->rd)
         b->rd = e_remove_undo (b->rd, WpeEditor->numundo + 1);
     if ((next = malloc (sizeof (Undo))) == NULL)
@@ -2425,9 +2435,9 @@ e_add_undo (int sw, BUFFER * b, int x, int y, int n)
         bn->bf[0].len = 0;
         bn->bf[0].nrc = 1;
         next->u.pt = bn;
-        e_undo_sw = 1;
+        shield_undo();
         e_move_block (0, 0, b, bn, f);
-        e_undo_sw = 0;
+        unshield_undo();
     }
     if (e_redo_sw == 1)
         b->rd = next;
@@ -2480,7 +2490,7 @@ e_make_rudo (we_window_t * window, int doing_redo)
         if (undo->type == 's')
         {
             e_add_undo ('s', b, undo->b.x, undo->b.y, undo->a.y);
-            e_undo_sw = 1;
+            shield_undo();
             e_del_nchar (b, s, undo->b.x, undo->b.y, undo->a.y);
         }
         if (*((char *) undo->u.pt) == '\n' && undo->a.x == 1)
@@ -2494,7 +2504,8 @@ e_make_rudo (we_window_t * window, int doing_redo)
         else
             e_ins_nchar (b, s, ((unsigned char *) undo->u.pt), undo->b.x, undo->b.y,
                          undo->a.x);
-        e_undo_sw = 0;
+        if (undo->type == 's')
+            unshield_undo();
         s->mark_begin = undo->b;
         s->mark_end.y = undo->b.y;
         s->mark_end.x = undo->b.x + undo->a.x;
@@ -2536,11 +2547,11 @@ e_make_rudo (we_window_t * window, int doing_redo)
     else if (undo->type == 'd')
     {
         BUFFER *bn = (BUFFER *) undo->u.pt;
-        e_undo_sw = 1;
+        shield_undo();
         s->mark_begin = bn->f->s->mark_begin;
         s->mark_end = bn->f->s->mark_end;
         e_move_block (undo->b.x, undo->b.y, bn, b, window);
-        e_undo_sw = 0;
+        unshield_undo();
         free (bn->f->s);
         free (bn->f);
         free (bn->bf[0].s);

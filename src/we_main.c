@@ -13,6 +13,7 @@
 #include "config.h"
 #include <string.h>
 #include <signal.h>
+#include "we_undo_shield.h"
 #include "keys.h"
 #include "messages.h"
 #include "options.h"
@@ -35,11 +36,10 @@
 
 #include "we_control.h"
 
-
-
 int
 main (int argc, char **argv)
 {
+    init_undo_shield();
     we_colorset_t *fb;
     we_control_t *cn;
     int i, err = 0;

@@ -2,7 +2,6 @@
 #define WE_MAIN_H
 
 #include "config.h"
-#include "globals.h"
 #include "we_e_aus.h"
 #include "we_edit.h"
 #include "we_fl_fkt.h"
