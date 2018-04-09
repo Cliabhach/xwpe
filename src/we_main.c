@@ -10,7 +10,6 @@
                            Version 1.0
                                        Copyright by F.Kruse       */
 
-/* includes */
 #include "config.h"
 #include "dbg.h"
 #include <stdlib.h>
@@ -76,7 +75,7 @@ main (int argc, char **argv)
         perror ("Xwpe: ");
         return 1;
     }
-#else
+#else	// ifdef/else HAVE_MKDTEMP
 #if defined(HAVE_TEMPNAM)
     e_tmp_dir = tempnam (NULL, "xwpe_");
 #else
@@ -88,7 +87,7 @@ main (int argc, char **argv)
         perror ("Xwpe: ");
         return 1;
     }
-#endif
+#endif	// ifdef/else HAVE_MKDTEMP
 
     for (i = 1; i < argc; i++) {
         if (*argv[i] == '-') {
