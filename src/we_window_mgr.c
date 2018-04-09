@@ -24,7 +24,7 @@
 /* Find the last text window in edit control */
 int e_find_last_text_window(we_window_t *window)
 {
-    int i = 0;
+    int i;
     we_control_t *control = window->edit_control;
 
     for (i = control->mxedt; i > 0 && !DTMD_ISTEXT (control->window[i]->dtmd); i--)

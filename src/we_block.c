@@ -62,14 +62,14 @@ e_block_del (we_window_t * window)
         e_add_undo ('d', buffer, screen->mark_begin.x, screen->mark_begin.y, 0);
         window->save = buffer->control->maxchg + 1;
 
-        /*********** start debugging code ************/
+        /*********** start code for we_debug ************/
         y = screen->mark_begin.y;
         if (screen->mark_begin.x > 0) {
             y++;
         }
         len = y - screen->mark_end.y + 1;
         e_brk_recalc (window, y, len);		// recalculate breakpoints
-        /*********** start debugging code ************/
+        /*********** end code for we_debug ************/
     }
     if (window->c_sw) {
         window->c_sw = e_sc_txt (window->c_sw, window->buffer);
