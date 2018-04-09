@@ -6,6 +6,7 @@
 
 #include "config.h"
 #include <string.h>
+#include <ctype.h>
 #include "keys.h"
 #include "messages.h"
 #include "model.h"
@@ -15,7 +16,7 @@
 #include "we_block.h"
 #include "we_progn.h"
 #include "we_edit.h"
-#include <ctype.h>
+#include "we_window_mgr.h"
 
 /*	delete block */
 /**
@@ -37,7 +38,7 @@ e_block_del (we_window_t * window)
     we_screen_t *screen;
     int i, y, len;
 
-    for (i = window->edit_control->mxedt; i > 0 && !DTMD_ISTEXT (window->edit_control->window[i]->dtmd); i--);
+    i = e_find_last_text_window(window);
     if (i <= 0) {
         return (0);
     }
@@ -86,7 +87,7 @@ e_block_dup (char *dup, we_window_t * window)
     we_screen_t *screen;
     int i;
 
-    for (i = window->edit_control->mxedt; i > 0 && !DTMD_ISTEXT (window->edit_control->window[i]->dtmd); i--);
+    i = e_find_last_text_window(window);
     if (i <= 0) {
         return (0);
     }
@@ -223,7 +224,7 @@ e_edt_copy (we_window_t * window)
     we_buffer_t *b0 = window->edit_control->window[0]->buffer;
     int i, save;
 
-    for (i = window->edit_control->mxedt; i > 0 && !DTMD_ISTEXT (window->edit_control->window[i]->dtmd); i--);
+    i = e_find_last_text_window(window);
     if (i <= 0) {
         return (0);
     }
@@ -256,7 +257,7 @@ e_edt_einf (we_window_t * window)
     we_buffer_t *b0 = window->edit_control->window[0]->buffer;
     int i, y, len;
 
-    for (i = window->edit_control->mxedt; i > 0 && !DTMD_ISTEXT (window->edit_control->window[i]->dtmd); i--);
+    i = e_find_last_text_window(window);
     if (i <= 0) {
         return (0);
     }
@@ -297,7 +298,7 @@ e_block_move (we_window_t * window)
     int i;
     we_point_t ka;
 
-    for (i = window->edit_control->mxedt; i > 0 && !DTMD_ISTEXT (window->edit_control->window[i]->dtmd); i--);
+    i = e_find_last_text_window(window);
     if (i <= 0) {
         return (0);
     }
@@ -512,7 +513,7 @@ e_block_copy (we_window_t * window)
     we_buffer_t *buffer;
     int i;
 
-    for (i = window->edit_control->mxedt; i > 0 && !DTMD_ISTEXT (window->edit_control->window[i]->dtmd); i--);
+    i = e_find_last_text_window(window);
     if (i <= 0) {
         return (0);
     }
@@ -668,7 +669,7 @@ e_block_hide (we_window_t * window)
     we_screen_t *screen;
     int i;
 
-    for (i = window->edit_control->mxedt; i > 0 && !DTMD_ISTEXT (window->edit_control->window[i]->dtmd); i--);
+    i = e_find_last_text_window(window);
     if (i <= 0) {
         return (0);
     }
@@ -687,7 +688,7 @@ e_block_begin (we_window_t * window)
 {
     int i;
 
-    for (i = window->edit_control->mxedt; i > 0 && !DTMD_ISTEXT (window->edit_control->window[i]->dtmd); i--);
+    i = e_find_last_text_window(window);
     if (i <= 0) {
         return (0);
     }
@@ -704,7 +705,7 @@ e_block_end (we_window_t * window)
 {
     int i;
 
-    for (i = window->edit_control->mxedt; i > 0 && !DTMD_ISTEXT (window->edit_control->window[i]->dtmd); i--);
+    i = e_find_last_text_window(window);
     if (i <= 0) {
         return (0);
     }
@@ -721,7 +722,7 @@ e_block_gt_beg (we_window_t * window)
 {
     int i;
 
-    for (i = window->edit_control->mxedt; i > 0 && !DTMD_ISTEXT (window->edit_control->window[i]->dtmd); i--);
+    i = e_find_last_text_window(window);
     if (i <= 0) {
         return (0);
     }
@@ -738,7 +739,7 @@ e_block_gt_end (we_window_t * window)
 {
     int i;
 
-    for (i = window->edit_control->mxedt; i > 0 && !DTMD_ISTEXT (window->edit_control->window[i]->dtmd); i--);
+    i = e_find_last_text_window(window);
     if (i <= 0) {
         return (0);
     }
@@ -755,7 +756,7 @@ e_block_mrk_all (we_window_t * window)
 {
     int i;
 
-    for (i = window->edit_control->mxedt; i > 0 && !DTMD_ISTEXT (window->edit_control->window[i]->dtmd); i--);
+    i = e_find_last_text_window(window);
     if (i <= 0) {
         return (0);
     }
@@ -775,7 +776,7 @@ e_block_mrk_line (we_window_t * window)
 {
     int i;
 
-    for (i = window->edit_control->mxedt; i > 0 && !DTMD_ISTEXT (window->edit_control->window[i]->dtmd); i--);
+    i = e_find_last_text_window(window);
     if (i <= 0) {
         return (0);
     }
@@ -806,7 +807,7 @@ e_block_changecase (we_window_t * window, int mode)
     we_screen_t *screen;
     int i, x, y, x_begin, x_end;
 
-    for (i = window->edit_control->mxedt; i > 0 && !DTMD_ISTEXT (window->edit_control->window[i]->dtmd); i--);
+    i = e_find_last_text_window(window);
     if (i <= 0) {
         return (0);
     }
@@ -888,7 +889,7 @@ e_block_to_left (we_window_t * window)
     int n = window->edit_control->tabn / 2, i, j, k, l, m, nn;
     unsigned char *tstr = malloc ((n + 2) * sizeof (char));
 
-    for (i = window->edit_control->mxedt; i > 0 && !DTMD_ISTEXT (window->edit_control->window[i]->dtmd); i--);
+    i = e_find_last_text_window(window);
     if (i <= 0) {
         return (0);
     }
@@ -941,7 +942,7 @@ e_block_to_right (we_window_t * window)
     int n = window->edit_control->tabn / 2, i, j;
     unsigned char *tstr = malloc ((n + 1) * sizeof (char));
 
-    for (i = window->edit_control->mxedt; i > 0 && !DTMD_ISTEXT (window->edit_control->window[i]->dtmd); i--);
+    i = e_find_last_text_window(window);
     if (i <= 0) {
         return (0);
     }
@@ -1011,7 +1012,7 @@ e_repeat_search (we_window_t * window)
     int start_offset;
     size_t end_offset;
 
-    for (i = window->edit_control->mxedt; i > 0 && !DTMD_ISTEXT (window->edit_control->window[i]->dtmd); i--);
+    i = e_find_last_text_window(window);
     if (i <= 0) {
         return (0);
     }
@@ -1119,7 +1120,7 @@ e_goto_line (we_window_t * window)
     int i, num;
     we_buffer_t *buffer;
 
-    for (i = window->edit_control->mxedt; i > 0 && !DTMD_ISTEXT (window->edit_control->window[i]->dtmd); i--);
+    i = e_find_last_text_window(window);
     if (i <= 0) {
         return (0);
     }
@@ -1237,7 +1238,7 @@ e_replace (we_window_t *window)
     if (!replace_options) {
         return (-1);
     }
-    for (i = window->edit_control->mxedt; i > 0 && !DTMD_ISTEXT (window->edit_control->window[i]->dtmd); i--);
+    i = e_find_last_text_window(window);
     if (i <= 0) {
         return (0);
     }

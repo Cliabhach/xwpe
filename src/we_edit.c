@@ -22,6 +22,7 @@
 #include "WeString.h"
 #include "we_wind.h"
 #include "we_file_fkt.h"
+#include "we_window_mgr.h"
 
 #ifdef UNIX
 #include<sys/types.h>		/*  included for digital station  */
@@ -169,8 +170,7 @@ e_edit (we_control_t * control, char *filename)
             st = 1;
         }
 #else
-    for (i = control->mxedt - 1; i > 0 && !DTMD_ISTEXT (control->window[i]->dtmd); i--)
-        ;
+    i = e_find_last_text_window(window);
 #endif
 #ifdef PROG
     if (WpeIsProg ()) {
@@ -2525,7 +2525,7 @@ e_make_rudo (we_window_t * window, int doing_redo)
     we_undo_t *undo;
     int i;
 
-    for (i = window->edit_control->mxedt; i > 0 && !DTMD_ISTEXT (window->edit_control->window[i]->dtmd); i--);
+    i = e_find_last_text_window(window);
     if (i <= 0) {
         return (0);
     }

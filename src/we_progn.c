@@ -18,6 +18,7 @@
 #include "WeProg.h"
 #include "WeString.h"
 #include "we_wind.h"
+#include "we_window_mgr.h"
 
 #ifdef UNIX
 #include <unistd.h>
@@ -1994,8 +1995,7 @@ e_mk_beauty (int sw, int ndif, we_window_t * window)
     int *vkcb = malloc (sizeof (int));
     we_point_t sa, se, sb;
 
-    for (i = window->edit_control->mxedt; i > 0 && !DTMD_ISTEXT (window->edit_control->window[i]->dtmd); i--)
-        ;
+    i = e_find_last_text_window(window);
     if (i <= 0) {
         free (tstr);
         free (bstr);
