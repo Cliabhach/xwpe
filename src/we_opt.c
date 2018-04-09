@@ -139,7 +139,7 @@ e_clear_desk (we_window_t * window)
 #endif
     fk_u_cursor (0);
     for (i = control->mxedt; i > 0; i--) {
-        window = control->window[control->mxedt];		// --> should this be window[i]?
+        window = control->window[control->mxedt];
         int return_char = e_close_window (window);		// --> e_close_window changes mxedt
         if (return_char == WPE_ESC) {
             return (WPE_ESC);
