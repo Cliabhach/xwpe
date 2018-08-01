@@ -1486,12 +1486,16 @@ e_mk_info_path (char *path, char *file)
         free (path);
     }
     for (n = 0; tp[n] && tp[n] != PTHD; n++);
-    if (!(path = malloc ((strlen (file) + n + 2) * sizeof (char)))) {
+    if (!(path = calloc (1, (strlen (file) + n + 2) * sizeof (char)))) {
         return (NULL);
     }
-    strncpy (path, tp, n);
-    if (n > 1) {
-        path[n++] = DIRC;
+    // n == 0 generates a compiler warning for -Wstringop-truncation
+    // and the warning text 'strncpy' destination unchanged after copying no bytes
+    if (n > 0) {
+        strncpy (path, tp, n);
+        if (n > 1) {
+            path[n++] = DIRC;
+        }
     }
     strcpy (path + n, file);
     return (path);

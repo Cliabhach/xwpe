@@ -22,6 +22,7 @@
 
 #if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
 #include <curses.h>
+#include <term.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
 #endif
@@ -30,6 +31,9 @@
 
 #include "we_screen.h"
 #include "we_unix.h"
+#include "we_term.h"
+
+#define fk_putp(p) ( p ? e_putp(p) : e_putp(attr_normal()) )
 
 /* AIX requires that tparm has 10 arguments. */
 #define tparm1(aa,bb) tparm((aa), (bb), 0, 0, 0, 0, 0, 0, 0, 0)
@@ -757,7 +761,7 @@ fk_colset (int c)
     cur_attr = c;
     bg = c / 16;
 //#ifdef TERMCAP
-#if !defined HAVE_LIBNCURSES && !defined HAVE_LIBCURSES
+#ifdef HAVE_LIBTERMCAP
     if ((c %= 16) >= col_num) {
         fk_putp (start_att_bold);
         e_putp (tgoto (col_fg, 0, c % col_num));
@@ -767,8 +771,8 @@ fk_colset (int c)
         e_putp (tgoto (col_fg, 0, c));
         e_putp (tgoto (col_bg, 0, bg));
     }
-#else // #if !defined HAVE_LIBNCURSES && !defined HAVE_LIBCURSES
-#ifdef HAVE_LIBNCURSES
+#else // #ifdef TERMCAP
+#if defined HAVE_LIBNCURSES || defined HAVE_LIBCURSES
     if (c & 8) {
         attrset (A_BOLD);
     } else {

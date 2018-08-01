@@ -3366,7 +3366,8 @@ WpeFindWindow (we_window_t * window)
 int
 e_ed_man (unsigned char *str, we_window_t * window)
 {
-    char command[256], tstr[_POSIX_PATH_MAX];
+    char command[1024];
+    char tstr[_POSIX_PATH_MAX];
     char cc, hstr[80], nstr[10];
     int mdsv = window->edit_control->dtmd, bg, i, j = 0;
     we_buffer_t *buffer = 0;

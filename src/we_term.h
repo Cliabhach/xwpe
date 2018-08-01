@@ -21,7 +21,7 @@
  * capabilities. For curses or ncurses this function is not
  * necessary
  */
-#if !defined(HAVE_LIBNCURSES) && !defined(HAVE_LIBCURSES)
+#if HAVE_LIBTERMCAP
 #define e_putp(s) tputs((s), 1, fk_u_putchar)
 #endif
 

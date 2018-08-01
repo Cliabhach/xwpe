@@ -2019,7 +2019,7 @@ e_su_rblk (int xa, unsigned char *s)
 void
 e_zlsplt (we_window_t * window)
 {
-    char str[20];
+    char str[25];
 
     if (!DTMD_ISTEXT (window->dtmd)) {
         return;

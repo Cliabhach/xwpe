@@ -221,7 +221,7 @@ error:
 
 int svflgs;
 
-#define fk_putp(p) ( p ? e_putp(p) : e_putp(attr_normal()) )
+//#define fk_putp(p) ( p ? e_putp(p) : e_putp(attr_normal()) )
 
 int
 fk_t_putchar (int c)
